@@ -11,19 +11,39 @@ func main() {
 	este:=make(chan int, 0)
 	oeste:=make(chan int, 0)
 
-	// Definimos un slice que agregará los resultados de las multiplicaciones
-	var result []int
-	// Definimos un slice con los valores de la última columna de la matriz que posmultiplica
-	// Definimos un slice conmpuesto por tres ceros
-
-
+	// Definimos la matriz que posmultiplica
 	var matB=[][]int{{1,0,1},{0,1,0},{2,2,0}}
+	// Definimos la matriz que posmultiplica
+	var matA=[][]int{{1,2,3},{4,5,6},{7,8,9}}
+
+
+	// Definimos un slice que agregará los resultados de las multiplicaciones
+	var resultUno []int
 
 	for i := 0; i <=2; i++ {
-		result=append(result,realizarMul(matB[:][i], este, norte, oeste))
+		resultUno=append(resultUno,realizarMul(matA[0][:],matB[:][i], este, norte, oeste))
 	}
 
-	fmt.Println(result)
+	fmt.Println(resultUno)
+
+	// Definimos un slice que agregará los resultados de las multiplicaciones
+	var resultDos []int
+
+	for i := 0; i <=2; i++ {
+		resultDos=append(resultDos,realizarMul(matA[1][:],matB[:][i], este, norte, oeste))
+	}
+
+	fmt.Println(resultDos)
+
+	// Definimos un slice que agregará los resultados de las multiplicaciones
+	var resultTres []int
+
+	for i := 0; i <=2; i++ {
+		resultTres=append(resultTres,realizarMul(matA[2][:],matB[:][i], este, norte, oeste))
+	}
+
+	fmt.Println(resultTres)
+
 }
 
 func multiplier(entero int,este chan int, norte chan int, oeste chan int )  {
@@ -38,25 +58,25 @@ func actulizarCanal(entero int, canal chan int)  {
 	}()
 }
 
-func realizarMul(miSlice []int,este chan int, norte chan int, oeste chan int ) int {
+func realizarMul(vectorA []int,vectorB []int,este chan int, norte chan int, oeste chan int ) int {
 
 	// Inicializamos los valores de los canales
-	actulizarCanal(miSlice[2], norte)
+	actulizarCanal(vectorB[2], norte)
 	actulizarCanal(0, este)
 
-	multiplier(9, este,norte,oeste )
+	multiplier(vectorA[2], este,norte,oeste )
 
 	// Actualizamos los valores de los canales
 	actulizarCanal(<-oeste, este)
-	actulizarCanal(miSlice[1], norte)
+	actulizarCanal(vectorB[1], norte)
 
-	multiplier(8, este,norte,oeste )
+	multiplier(vectorA[1], este,norte,oeste )
 
 	// Actualizamos los valores de los canales
 	actulizarCanal(<-oeste, este)
-	actulizarCanal(miSlice[0], norte)
+	actulizarCanal(vectorB[0], norte)
 
-	multiplier(7, este,norte,oeste )
+	multiplier(vectorA[0], este,norte,oeste )
 	return(<-oeste)
 
 }
